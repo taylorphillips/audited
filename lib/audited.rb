@@ -19,6 +19,7 @@ module Audited
   @ignored_attributes = %w(lock_version created_at updated_at created_on updated_on)
 
   @current_user_method = :current_user
+  @current_owner_method = :current_owner
 end
 
 require 'audited/auditor'

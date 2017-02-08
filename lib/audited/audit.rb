@@ -5,6 +5,7 @@ module Audited
   #
   # * <tt>auditable</tt>: the ActiveRecord model that was changed
   # * <tt>user</tt>: the user that performed the change; a string or an ActiveRecord model
+  # * <tt>owner</tt>: the user that performed the change; a string or an ActiveRecord model (ADDED BY NESTEGG)
   # * <tt>action</tt>: one of create, update, or delete
   # * <tt>audited_changes</tt>: a serialized hash of all the changes
   # * <tt>comment</tt>: a comment set with the audit
@@ -17,6 +18,7 @@ module Audited
 
     belongs_to :auditable,  polymorphic: true
     belongs_to :user,       polymorphic: true
+    belongs_to :owner,      polymorphic: true
     belongs_to :associated, polymorphic: true
 
     before_create :set_version_number, :set_audit_user, :set_request_uuid
@@ -139,6 +141,11 @@ module Audited
 
     def set_audit_user
       self.user = Thread.current[:audited_user] if Thread.current[:audited_user]
+      nil # prevent stopping callback chains
+    end
+
+    def set_audit_owner
+      self.owner = Thread.current[:audited_owner] if Thread.current[:audited_owner]
       nil # prevent stopping callback chains
     end
 
